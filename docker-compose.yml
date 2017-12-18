@@ -1,0 +1,32 @@
+version: "2"
+
+services:
+  nginx:
+    build: ./containers/nginx
+    ports:
+      - 80:80
+      - 443:443
+    links:
+      - nodejs
+  nodejs:
+    build: ./containers/nodejs
+    working_dir: "/usr/local/lib/node_modules"
+    volumes:
+      - "./data/nodejs:/usr/local/lib/node_modules"
+    ports:
+      - 10081:10081
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+    command: node app.js
+    links:
+      - mysql
+  mysql:
+    build: ./containers/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+      MYSQL_USER: abot
+      MYSQL_DB: wikiq
+    expose:
+     - "3306"
