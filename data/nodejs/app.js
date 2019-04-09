@@ -1,4 +1,4 @@
-var listen_port = 10080;
+var listen_port = 10081;
 
 var http = require('http');
 var fs = require('fs');
@@ -11,8 +11,10 @@ var mysql = require('mysql');
 var qs = require('querystring');
 
 var connection = mysql.createConnection({
-  host     : mysql,
+  host     : 'mysql',
   user     : 'root',
+  password : 'root',
+  port     : 3306,
 });
 
 var db = "CREATE DATABASE IF NOT EXISTS wikiq;";
@@ -30,9 +32,14 @@ connection.connect(function(err) {
     console.error('error connecting: ' + err.stack);
     return;
   }
-  connection.query(db, function (error, results, fields) {});
-  connection.query(table, function (error, results, fields) {});
+  connection.query(db, function (error, results, fields) {
+    console.error(error);
+  });
+  connection.query(table, function (error, results, fields) {
+    console.error(error);
+  });
 });
+
 
 log4js.configure({
      appenders: {

@@ -10,23 +10,28 @@ services:
       - nodejs
   nodejs:
     build: ./containers/nodejs
-    working_dir: "/usr/local/lib/node_modules"
+    working_dir: "/usr/local/data"
     volumes:
-      - "./data/nodejs:/usr/local/lib/node_modules"
+      - "./data/nodejs:/usr/local/data"
+      - "./tools:/usr/local/tools"
     ports:
       - 10081:10081
     environment:
-      DB_HOST: db
-      DB_PORT: 5432
-    command: node app.js
+      DB_HOST: mysql
+      DB_PORT: 3306
+    command: /usr/local/tools/wait-for-mysql.sh mysql root root 3306 node app.js
     links:
       - mysql
   mysql:
-    build: ./containers/mysql
+    image: mysql:5.7
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_PASSWORD: root
-      MYSQL_USER: abot
+      MYSQL_USER: root
       MYSQL_DB: wikiq
-    expose:
-     - "3306"
