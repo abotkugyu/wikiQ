@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import parse, { Wiki } from './parse.js';
 import socket from './socket.js';
+import Login from './login.js';
 
 class Answer extends React.Component {
   constructor(props) {
@@ -223,81 +224,6 @@ class Contents extends React.Component {
   }
 }
 
-class LoginForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: '',
-    };
-    this.handleEnter = this.handleEnter.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  handleEnter(event) {
-    if(event.key == 'Enter'){
-      if( event.currentTarget.id == 'nickname' ){
-        document.getElementById("password").focus();
-      }else{
-        this.handleSubmit(event);
-
-      }
-    }
-  }
-  handleSubmit(event) {
-    event.preventDefault();
-    var data = new FormData(document.getElementById('login_form'));
-    fetch("/login",
-    {
-        method: "POST",
-        body: data
-    })
-    .then(function(res){ /*return res.json();*/ })
-    .then(function(data){ /*alert( JSON.stringify( data ) )*/ });
-    this.props.parentMethod();
-  }
-  render() {
-    return (
-      <div className="center-block notice_box">
-        <form id="login_form">
-        <div className="mdl-textfield mdl-js-textfield">
-          <input className="mdl-textfield__input" type="text" name="nickname" id="nickname" onKeyPress={this.handleEnter} placeholder="nickname"/>
-          <label className="mdl-textfield__label" for="nickname">Text...</label>
-        </div>
-        <div className="row form-group">
-          <div className="col-md-12">
-            <div className="input-group">
-              <span className="input-group-addon">password</span>
-              <input type="password" name="password" id="password" onKeyPress={this.handleEnter} className="form-control" placeholder="password"/>
-            </div>
-          </div>
-        </div>
-        <div className="row form-group">
-          <div className="col-md-12">
-            <div>
-              <button type="button" onClick={this.handleSubmit} className="btn btn-default">login</button>
-            </div>
-          </div>
-        </div>
-      </form>
-      </div>
-    );
-  }
-}
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: '',
-    };
-  }
-  render() {
-    return (
-      <div>
-        <LoginForm parentMethod={this.props.parentMethod}/>
-      </div>
-    );
-  }
-}
-
 class Wikiq extends React.Component {
   constructor(props) {
     super(props);
@@ -328,10 +254,9 @@ class Wikiq extends React.Component {
     );
   }
 }
-ReactDOM.render(
-  <Wikiq />,
-  document.getElementById('wikiq')
-);
+
+export default Wikiq;
+
 /*
 ReactDOM.render(
   <Login />,
