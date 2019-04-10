@@ -1,3 +1,8 @@
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import parse, { Wiki } from './parse.js';
+import socket from './socket.js';
+
 class Answer extends React.Component {
   constructor(props) {
     super(props);
@@ -253,18 +258,12 @@ class LoginForm extends React.Component {
     return (
       <div className="center-block notice_box">
         <form id="login_form">
-        <div className="row form-group">
-          <div className="col-md-4 col-xs-3"></div>
-          <div className="col-md-4 col-xs-6">
-            <div className="input-group">
-              <span className="input-group-addon">nickname</span>
-              <input type="text" name="nickname" id="nickname" onKeyPress={this.handleEnter} className="form-control" placeholder="nickname"/>
-            </div>
-          </div>
+        <div className="mdl-textfield mdl-js-textfield">
+          <input className="mdl-textfield__input" type="text" name="nickname" id="nickname" onKeyPress={this.handleEnter} placeholder="nickname"/>
+          <label className="mdl-textfield__label" for="nickname">Text...</label>
         </div>
         <div className="row form-group">
-          <div className="col-md-4 col-xs-3"></div>
-          <div className="col-md-4 col-xs-6">
+          <div className="col-md-12">
             <div className="input-group">
               <span className="input-group-addon">password</span>
               <input type="password" name="password" id="password" onKeyPress={this.handleEnter} className="form-control" placeholder="password"/>
@@ -272,8 +271,7 @@ class LoginForm extends React.Component {
           </div>
         </div>
         <div className="row form-group">
-          <div className="col-md-4 col-xs-3"></div>
-          <div className="col-md-4 col-xs-6">
+          <div className="col-md-12">
             <div>
               <button type="button" onClick={this.handleSubmit} className="btn btn-default">login</button>
             </div>

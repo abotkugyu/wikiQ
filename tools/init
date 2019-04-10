@@ -1,0 +1,4 @@
+PARENT_DIR=$(cd $(dirname $0);cd ../;pwd)
+echo "${PARENT_DIR}"
+cd  "${PARENT_DIR}/data/nodejs/view" && npm install
+cd  "${PARENT_DIR}" && docker-compose build && docker-compose up -d

@@ -553,3 +553,5 @@ Wiki.Formatter.prototype.addHRStatement = function (pat) {
             this.out.push('<hr />');
         });
 };
+
+export { Wiki };

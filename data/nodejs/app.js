@@ -119,6 +119,19 @@ function init_question(){
   now_question = "";
 } 
 
+function vp(path){
+  return "view/build/"+path;
+}
+
+function get_content_type(path){
+  if (path.match(/.json$/)){
+    return "application/json";
+  } else if (path.match(/.js$/)) {
+    return "application/javascript";
+  }
+  return "text/html"; 
+}
+
 function send_question(){
   if(typeof question[question_seq] !== "undefined"){
     now_question = now_question + question[question_seq];
@@ -142,9 +155,10 @@ function send_ranking(){
 
 server.on('request', function(req, res) {
   var path = url.parse(req.url).pathname;
+  console.log(path);
   if(path == '/index.html' || path == '/') {
     res.writeHead(200, {'Content-Type': 'text/html'});
-    var output = fs.readFileSync("./index.html", "utf-8");
+    var output = fs.readFileSync(vp("index.html"), "utf-8");
     res.write(output);
   }else if(path === '/login'){
     var body='';
@@ -156,14 +170,29 @@ server.on('request', function(req, res) {
         console.log(POST);
     });
   }else if(path === '/favicon.ico'){
-    res.writeHead(403, {'Content-Type': 'text/html'});
-  }else{
-    if (fs.existsSync(__dirname + path)) {  
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      var output = fs.readFileSync(__dirname + path,"utf-8");
+    if (fs.existsSync(vp("favicon.ico"))) {
+      res.writeHead(200, {'Content-Type': 'image/x-icon'});
+      var output = fs.readFileSync(vp(path), "utf-8");
       res.write(output);
     }else{
       res.writeHead(403, {'Content-Type': 'text/html'});
+    }
+  }else if(path.match(/.json$/)){
+    if (fs.existsSync(vp(path))) {  
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      var output = fs.readFileSync(vp(path), "utf-8");
+      res.write(output);
+    }else{
+      res.writeHead(403, {'Content-Type': 'text/html'});
+    }
+  }else{
+    content_type = get_content_type(path);
+    if (fs.existsSync(vp(path))) {  
+      res.writeHead(200, {'Content-Type': content_type});
+      var output = fs.readFileSync(vp(path),"utf-8");
+      res.write(output);
+    }else{
+      res.writeHead(403, {'Content-Type': content_type});
     }
   }
   res.end();
@@ -188,10 +217,10 @@ io.sockets.on('connection', function(socket) {
     send['answer'] = data.value;
     if(data.value == question_title){
       if(is_end){
-        send['notice'] = "あたりです！<br>(すでに正解者が出ているのでポイントは追加されません)";
+        send['notice'] = "あたりです！<br>(すでに正解者が出ているので、ポイントは追加されません)";
       }else{
         is_end = 1;
-        send['notice'] = "あたり！１番乗り！";
+        send['notice'] = "あたり！！";
         //set_ranking();
         //send_ranking();
       }
@@ -199,7 +228,7 @@ io.sockets.on('connection', function(socket) {
       send['notice'] = "はずれ";
     }
     io.sockets.to(socket.id).emit("send_answer_hit", {value:send});
-    socket.broadcast.emit("send_answer_hit", {value:"他の方が正解しました"});
+    socket.broadcast.emit("send_answer_hit", {value:"他の人が正解しました"});
   });
   
   socket.on("get_ranking", function (data) {

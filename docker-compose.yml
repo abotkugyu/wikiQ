@@ -19,7 +19,7 @@ services:
     environment:
       DB_HOST: mysql
       DB_PORT: 3306
-    command: /usr/local/tools/wait-for-mysql.sh mysql root root 3306 node app.js
+    command: /usr/local/tools/wait_for_mysql.sh mysql root root 3306 node app.js
     links:
       - mysql
   mysql:

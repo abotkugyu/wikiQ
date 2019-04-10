@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>wikiQ</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+      var socket = io.connect('http://127.0.0.1:10081');
+    </script>
+    <style>
+html {
+  height: 100%;
+}
+main {
+  flex: 1 0 auto;
+}
+.clicked{
+  background-color:#676863;
+}
+.mdl-dialog{
+  width:50%;
+}
+.notice_box {
+  padding: 7px;
+  margin: auto;
+  margin-top:10px;
+  margin-bottom:10px;
+  min-height:400px;
+}
+.float-right{
+  float:right;
+}
+.fl{
+  padding:10px;
+  float:left;
+}
+.fr{
+  padding:10px;
+  float:right;
+}
+@media only screen and (max-width: 979px) {
+     
+}
+ 
+@media only screen and (min-width: 481px) and (max-width: 768px) {
+} 
+ 
+@media only screen and (max-width: 480px) {
+    .sf{ 
+        display:none;
+    }
+ 
+}
+.hide{
+  display:none;
+}
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div class="">
+      <main class="main">
+        <div id="wikiq"></div>
+      </main>
+    </div>
+    <script type="text/jsx" src="/js/wikiq.js">
+    </script>
+  </body>
+</html>
