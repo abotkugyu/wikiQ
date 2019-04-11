@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import parse, { Wiki } from './parse.js';
 import socket from './socket.js';
 import Login from './login.js';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 class Answer extends React.Component {
   constructor(props) {
@@ -162,9 +166,11 @@ class Notice extends React.Component {
   render(){
     //const notice = <div key="all">{this.state.value}</div>;
     return(
-      <div>
-        <div id="notice_board">
-        </div>
+      <div className="">
+        <Paper>
+          <Typography id="notice_board" component="p">
+          </Typography>
+        </Paper>
       </div>
     );
   }
@@ -208,12 +214,29 @@ class Contents extends React.Component {
           //<a href="#lannisters-panel" className="mdl-tabs__tab">info</a>
   render() {
     return (
-      <div className="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+      <div>
+          <Tabs
+            value={this.state.value}
+            onChange={this.handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="fullWidth"
+            centered
+          >
+            <Tab label="WikiQ">
+              <div>
+                <Notice />
+              </div>
+              <Ranking />
+              <Answer />
+            </Tab>
+            <Tab label="Info">Item Two</Tab>
+          </Tabs>
         <div className="mdl-tabs__tab-bar">
           <a href="#starks-panel" className="mdl-tabs__tab is-active">wikiQ</a>
         </div>
         <div className="mdl-tabs__panel is-active" id="starks-panel">
-          <div className="notice_box demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+          <div>
             <Notice />
           </div>
           <Ranking />

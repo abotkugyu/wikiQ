@@ -1,6 +1,11 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 class LoginForm extends React.Component {
   constructor(props) {
@@ -37,14 +42,52 @@ class LoginForm extends React.Component {
       <div className="center-block notice_box">
         <form id="login_form">
         <div>
-        <TextField name="nickname" id="nickname" label="nickname" margin="normal" variant="outlined" onKeyPress={this.handleEnter}/>
+          <TextField name="nickname" id="nickname" label="nickname" margin="normal" variant="outlined" onKeyPress={this.handleEnter}/>
         </div>
         <div>
-        <TextField name="password" id="password" label="password" margin="normal" variant="outlined" onKeyPress={this.handleEnter}/>
+          <TextField name="password" id="password" label="password" margin="normal" variant="outlined" onKeyPress={this.handleEnter}/>
         </div>
-        <Button variant="outlined" color="primary" onClick={this.handleSubmit}>
-          Login
-        </Button>
+        <div>
+          <ExpansionPanel>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography >Create Mode</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Typography>
+                <Button variant="outlined" color="primary" onClick={this.handleSubmit}>
+                  Create
+                </Button>
+              </Typography>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+          <ExpansionPanel>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography >Join Mode</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Typography>
+                <div>
+                <TextField name="room" id="room" label="room" margin="normal" variant="outlined" onKeyPress={this.handleEnter}/>
+                </div>
+                <Button variant="outlined" color="primary" onClick={this.handleSubmit}>
+                  Join
+                </Button>
+              </Typography>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+          <ExpansionPanel>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography >Random Mode</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Typography>
+                <Button variant="outlined" color="primary" onClick={this.handleSubmit}>
+                  Random
+                </Button>
+              </Typography>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        </div>
       </form>
       </div>
     );
