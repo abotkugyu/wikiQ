@@ -28,6 +28,7 @@ tools/init
 
 ### edit
 ```
-# run react
+# run dev react and hot reload
 tools/dev
+# access http://127.0.0.1:3000
 ```

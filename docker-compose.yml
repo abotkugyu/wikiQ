@@ -16,6 +16,7 @@ services:
       - "./tools:/usr/local/tools"
     ports:
       - 10081:10081
+      - 3000:3000
     environment:
       DB_HOST: mysql
       DB_PORT: 3306
