@@ -6,15 +6,22 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       value: '',
+      login_type: 'random',
+      expanded: 'random',
     };
     this.handleEnter = this.handleEnter.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChangeLoginType = this.handleChangeLoginType.bind(this);
+    this.handleChangeExpanded = this.handleChangeExpanded.bind(this);
   }
   handleEnter(event) {
     if(event.key === 'Enter'){
@@ -37,10 +44,24 @@ class LoginForm extends React.Component {
     .then(function(data){ /*alert( JSON.stringify( data ) )*/ });
     this.props.parentMethod();
   }
+  handleChangeLoginType = event => {
+    this.setState({ 
+      login_type: event.target.value,
+      expanded: event.target.value,
+    });
+  }
+
+  handleChangeExpanded = panel => (event, expanded) => {
+    this.setState({
+      expanded: expanded ? panel : false,
+      login_type: expanded ? panel : false,
+    });
+  };
+
   render() {
     return (
       <div className="center-block notice_box">
-        <form id="login_form">
+        <form id="login_form" onSubmit={this.handleSubmit}>
         <div>
           <TextField name="nickname" id="nickname" label="nickname" margin="normal" variant="outlined" onKeyPress={this.handleEnter}/>
         </div>
@@ -48,45 +69,39 @@ class LoginForm extends React.Component {
           <TextField name="password" id="password" label="password" margin="normal" variant="outlined" onKeyPress={this.handleEnter}/>
         </div>
         <div>
-          <ExpansionPanel>
+          <ExpansionPanel expanded={this.state.expanded === 'create'} onChange={this.handleChangeExpanded('create')}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography >Create Mode</Typography>
+              <FormControlLabel value="create" control={<Radio onChange={this.handleChangeLoginType} checked={this.state.login_type === 'create'} name="login_type"/>} label="Create Mode" />
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
-                <Button variant="outlined" color="primary" onClick={this.handleSubmit}>
-                  Create
-                </Button>
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
-          <ExpansionPanel>
+          <ExpansionPanel expanded={this.state.expanded === 'join'} onChange={this.handleChangeExpanded('join')}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography >Join Mode</Typography>
+              <FormControlLabel value="join" control={<Radio onChange={this.handleChangeLoginType} checked={this.state.login_type === 'join'} name="login_type"/>} label="Join Mode" />
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
                 <div>
-                <TextField name="room" id="room" label="room" margin="normal" variant="outlined" onKeyPress={this.handleEnter}/>
+                <TextField name="room" id="room" label="room_id" margin="normal" variant="outlined" onKeyPress={this.handleEnter}/>
                 </div>
-                <Button variant="outlined" color="primary" onClick={this.handleSubmit}>
-                  Join
-                </Button>
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
-          <ExpansionPanel>
+          <ExpansionPanel expanded={this.state.expanded === 'random'} onChange={this.handleChangeExpanded('random')}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography >Random Mode</Typography>
+              <FormControlLabel value="random" control={<Radio onChange={this.handleChangeLoginType} checked={this.state.login_type === 'random'} name="login_type"/>} label="Random Mode" />
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
-                <Button variant="outlined" color="primary" onClick={this.handleSubmit}>
-                  Random
-                </Button>
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
+          <Button variant="outlined" color="primary" type="submit" value="join">
+            Join
+          </Button>
         </div>
       </form>
       </div>

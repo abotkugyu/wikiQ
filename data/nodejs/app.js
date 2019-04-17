@@ -164,6 +164,7 @@ server.on('request', function(req, res) {
     var body='';
     req.on('data', function (data) {
         body +=data;
+        console.log(data);
     });
     req.on('end',function(){
         var POST =  qs.parse(body);
