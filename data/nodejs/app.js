@@ -1,6 +1,8 @@
 var listen_port = 10081;
 
 var express = require("express");
+var multer = require('multer');
+var form = multer({ dest: '/tmp' })
 var app = express();
 
 var http = require('http');
@@ -161,11 +163,13 @@ function send_ranking(){
   io.sockets.emit("send_ranking", {value:send});
 }
 
-app.post(['/login'],function ( req, res ) {
-  
+app.use(express.static(__dirname + vp("")));
+
+app.post(['/login'], form.any(), function ( req, res ) {
+  console.log("login");
+  console.log(req.body);
 });
 
-app.use(express.static(__dirname + vp("")));
 
 /*
 server.on('request', function(req, res) {
