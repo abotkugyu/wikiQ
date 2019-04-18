@@ -1,9 +1,15 @@
 var listen_port = 10081;
 
+var express = require("express");
+var app = express();
+
 var http = require('http');
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+var connect_count = 0;
+
 var fs = require('fs');
 var url = require('url');
-var server = http.createServer();　
 var log4js = require('log4js');
 var logger = exports = module.exports = {};
 var request = require('request');
@@ -79,14 +85,16 @@ function get_question(){
     }
   };
   request.get(options, function(error, response, body){
-    res = JSON.parse(body);
-    //rnnamespaceが0ならないとは思うが念のため
-    if(!res['query']['random'][0]['title'].match(/:/gi)){
-      question_title = res['query']['random'][0]['title'];
-      create_question(res['query']['random'][0]['title']);
-      return;
-    }else{
-      return get_question();
+    if( typeof body !== 'undefined') {
+      res = JSON.parse(body);
+      //rnnamespaceが0ならないとは思うが念のため
+      if(!res['query']['random'][0]['title'].match(/:/gi)){
+        question_title = res['query']['random'][0]['title'];
+        create_question(res['query']['random'][0]['title']);
+        return;
+      }else{
+        return get_question();
+      }
     }
   });
 }
@@ -120,7 +128,7 @@ function init_question(){
 } 
 
 function vp(path){
-  return "view/build/"+path;
+  return "/view/build"+path;
 }
 
 function get_content_type(path){
@@ -153,13 +161,24 @@ function send_ranking(){
   io.sockets.emit("send_ranking", {value:send});
 }
 
+app.post(['/login'],function ( req, res ) {
+  
+});
+
+app.use(express.static(__dirname + vp("")));
+
+/*
 server.on('request', function(req, res) {
   var path = url.parse(req.url).pathname;
   console.log(path);
   if(path == '/index.html' || path == '/') {
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    var output = fs.readFileSync(vp("index.html"), "utf-8");
-    res.write(output);
+    if (fs.existsSync(vp("index.html"))) {
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      var output = fs.readFileSync(vp("index.html"), "utf-8");
+      res.write(output);
+    }else{
+      res.writeHead(403, {'Content-Type': 'text/html'});
+    }
   }else if(path === '/login'){
     var body='';
     req.on('data', function (data) {
@@ -167,8 +186,9 @@ server.on('request', function(req, res) {
         console.log(data);
     });
     req.on('end',function(){
-        var POST =  qs.parse(body);
+        var POST = qs.parse(body);
         console.log(POST);
+        console.log(body.login_type);
     });
   }else if(path === '/favicon.ico'){
     if (fs.existsSync(vp("favicon.ico"))) {
@@ -198,11 +218,7 @@ server.on('request', function(req, res) {
   }
   res.end();
 });
-
-
-
-var io = require('socket.io').listen(server);
-var connect_count = 0;
+*/
 
 get_question();
 setInterval(send_question,50);

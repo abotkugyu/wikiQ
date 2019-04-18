@@ -20,7 +20,6 @@ class LoginForm extends React.Component {
     };
     this.handleEnter = this.handleEnter.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChangeLoginType = this.handleChangeLoginType.bind(this);
     this.handleChangeExpanded = this.handleChangeExpanded.bind(this);
   }
   handleEnter(event) {
@@ -40,18 +39,17 @@ class LoginForm extends React.Component {
         method: "POST",
         body: data
     })
-    .then(function(res){ /*return res.json();*/ })
-    .then(function(data){ /*alert( JSON.stringify( data ) )*/ });
-    this.props.parentMethod();
-  }
-  handleChangeLoginType = event => {
-    this.setState({ 
-      login_type: event.target.value,
-      expanded: event.target.value,
-    });
+    .then(function(res){
+      if(res.status ==  200) {
+        this.props.parentMethod();
+      }
+      return res.json;
+    }.bind(this))
+    .then(function(data){ console.log(data) });
   }
 
   handleChangeExpanded = panel => (event, expanded) => {
+    console.log(expanded);
     this.setState({
       expanded: expanded ? panel : false,
       login_type: expanded ? panel : false,
@@ -69,18 +67,18 @@ class LoginForm extends React.Component {
           <TextField name="password" id="password" label="password" margin="normal" variant="outlined" onKeyPress={this.handleEnter}/>
         </div>
         <div>
-          <ExpansionPanel expanded={this.state.expanded === 'create'} onChange={this.handleChangeExpanded('create')}>
+          <ExpansionPanel value="create" expanded={this.state.expanded === 'create'} onChange={this.handleChangeExpanded('create')}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <FormControlLabel value="create" control={<Radio onChange={this.handleChangeLoginType} checked={this.state.login_type === 'create'} name="login_type"/>} label="Create Mode" />
+              <FormControlLabel value="create" control={<Radio checked={this.state.login_type === 'create'} name="login_type"/>} label="Create Mode" />
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
-          <ExpansionPanel expanded={this.state.expanded === 'join'} onChange={this.handleChangeExpanded('join')}>
+          <ExpansionPanel value="join" expanded={this.state.expanded === 'join'} onChange={this.handleChangeExpanded('join')}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <FormControlLabel value="join" control={<Radio onChange={this.handleChangeLoginType} checked={this.state.login_type === 'join'} name="login_type"/>} label="Join Mode" />
+              <FormControlLabel value="join" control={<Radio checked={this.state.login_type === 'join'} name="login_type"/>} label="Join Mode" />
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
@@ -90,9 +88,9 @@ class LoginForm extends React.Component {
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
-          <ExpansionPanel expanded={this.state.expanded === 'random'} onChange={this.handleChangeExpanded('random')}>
+          <ExpansionPanel value="random" expanded={this.state.expanded === 'random'} onChange={this.handleChangeExpanded('random')}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <FormControlLabel value="random" control={<Radio onChange={this.handleChangeLoginType} checked={this.state.login_type === 'random'} name="login_type"/>} label="Random Mode" />
+              <FormControlLabel value="random" control={<Radio checked={this.state.login_type === 'random'} name="login_type"/>} label="Random Mode" />
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <Typography>
