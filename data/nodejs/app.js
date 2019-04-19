@@ -166,10 +166,28 @@ function send_ranking(){
 app.use(express.static(__dirname + vp("")));
 
 app.post(['/login'], form.any(), function ( req, res ) {
-  console.log("login");
-  console.log(req.body);
-});
+  //randomで名前を決定する
+  var body = req.body; 
+  if (body.nickname == "" || body.password == "") {
 
+  }
+
+  if (body.login_type == "create") {
+
+  } else if (body.login_type == "join") {
+    //エラーで返す
+    if (body.room_id === 'undefined' || body.room_id == "") {
+
+    }
+  } else if (body.login_type == "random") {
+
+  }
+
+  return res.send(req.body);
+
+  console.log("login");
+  console.log(req.body.login_type);
+});
 
 /*
 server.on('request', function(req, res) {
