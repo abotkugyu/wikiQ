@@ -2,3 +2,4 @@ data/mysql/*
 data/nodejs/log/*
 data/nodejs/view/node_modules
 node_modules
+npm-debug.log

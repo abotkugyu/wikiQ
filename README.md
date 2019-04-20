@@ -21,14 +21,17 @@ mysql -hmysql -uroot -proot -p3306
 not use
 ```
 
-### init & start
 ```
-tools/init
-```
+develop
+	local	-	nodejs	
+			↓↑	
+	docker 	-	mysql(ランキング、ユーザーデータ）	
+		    -	nginx	
 
-### edit
-```
-# run dev react and hot reload
-tools/dev
-# access http://127.0.0.1:3000
+product				
+	docker 	-	nginx	
+			↓（リバースプロキシ）	
+		    -	nodejs
+			↓↑	
+		    -	mysql(ランキング、ユーザーデータ）
 ```

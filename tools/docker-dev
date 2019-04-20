@@ -1,0 +1,2 @@
+PARENT_DIR=$(cd $(dirname $0);cd ../;pwd)
+cd "${PARENT_DIR}" && docker-compose build && docker-compose -f docker-compose.dev.yaml up -d

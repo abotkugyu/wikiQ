@@ -4,4 +4,4 @@ RUN set -ex; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
     mysql-client
-RUN npm install socket.io && npm install log4js && npm install request && npm install querystring && npm install mysql && npm install express && npm install multer
+RUN npm install socket.io && npm install log4js && npm install request && npm install querystring && npm install mysql && npm install express && npm install multer && npm install react && npm install react-dom && npm install webpack && npm install babel-loader

@@ -1,15 +1,3 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
@@ -40,6 +28,7 @@ class LoginForm extends React.Component {
         body: data
     })
     .then(function(res){
+      console.log(res.body);
       if(res.status ==  200) {
         this.props.parentMethod();
       }

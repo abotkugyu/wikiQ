@@ -1,8 +1,0 @@
-#!/bin/bash
-
-row=`docker ps --filter "name=nodejs" --filter "status=running" | wc -l`
-if [ $row -gt 1 ] ; then
-  docker-compose exec nodejs bash -c "cd /usr/local/data/view && npm start"
-else
-  echo "needs up nodejs(docker) "
-fi

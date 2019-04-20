@@ -17,13 +17,41 @@ var logger = exports = module.exports = {};
 var request = require('request');
 var mysql = require('mysql');
 var qs = require('querystring');
+global.host = 'mysql';
 
-var connection = mysql.createConnection({
-  host     : 'mysql',
-  user     : 'root',
-  password : 'root',
-  port     : 3306,
-});
+function get_service(){
+  return "dev";
+}
+
+function init(){
+  if(get_service() == "dev"){
+    app.use(express.static(__dirname + "/static"));
+  } else if(get_service() == "prod"){
+    app.use(express.static(__dirname + "/static"));
+  }
+}
+
+function get_server_config() {
+  if(get_service() == "dev"){
+    return {
+      host     : '127.0.0.1',
+      user     : 'root',
+      password : 'root',
+      port     : 3306,
+    };
+  } else if(get_service() == "prod"){
+    return {
+      host     : 'mysql',
+      user     : 'root',
+      password : 'root',
+      port     : 3306,
+    };
+  }
+}
+
+init();
+
+var connection = mysql.createConnection(get_server_config());
 
 var db = "CREATE DATABASE IF NOT EXISTS wikiq;";
 
@@ -47,7 +75,6 @@ connection.connect(function(err) {
     console.error(error);
   });
 });
-
 
 log4js.configure({
      appenders: {
@@ -129,19 +156,6 @@ function init_question(){
   now_question = "";
 } 
 
-function vp(path){
-  return "/view/build"+path;
-}
-
-function get_content_type(path){
-  if (path.match(/.json$/)){
-    return "application/json";
-  } else if (path.match(/.js$/)) {
-    return "application/javascript";
-  }
-  return "text/html"; 
-}
-
 function send_question(){
   if(typeof question[question_seq] !== "undefined"){
     now_question = now_question + question[question_seq];
@@ -163,9 +177,8 @@ function send_ranking(){
   io.sockets.emit("send_ranking", {value:send});
 }
 
-app.use(express.static(__dirname + vp("")));
-
 app.post(['/login'], form.any(), function ( req, res ) {
+  console.log("login");
   //randomで名前を決定する
   var body = req.body; 
   if (body.nickname == "" || body.password == "") {
@@ -177,15 +190,13 @@ app.post(['/login'], form.any(), function ( req, res ) {
   } else if (body.login_type == "join") {
     //エラーで返す
     if (body.room_id === 'undefined' || body.room_id == "") {
-
+      return res.send(req.body);
     }
   } else if (body.login_type == "random") {
 
   }
-
   return res.send(req.body);
-
-  console.log("login");
+  
   console.log(req.body.login_type);
 });
 
@@ -240,6 +251,14 @@ server.on('request', function(req, res) {
   }
   res.end();
 });
+function get_content_type(path){
+  if (path.match(/.json$/)){
+    return "application/json";
+  } else if (path.match(/.js$/)) {
+    return "application/javascript";
+  }
+  return "text/html"; 
+}
 */
 
 get_question();
