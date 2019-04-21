@@ -1,4 +1,11 @@
-class Notice extends React.Component {
+import React from 'react';
+import parse, { Wiki } from './parse.js';
+import Paper from '@material-ui/core/paper';
+import Typography from '@material-ui/core/Typography';
+import socket from './socket.js';
+
+
+export default class Notice extends React.Component {
   constructor(props){
     super(props);
     this.state = {
@@ -14,13 +21,9 @@ class Notice extends React.Component {
     var value = this.state.value;
     var formatter = new Wiki.Formatter();
     document.getElementById('notice_board').innerHTML = formatter.format(data.value);
-    /*
-    this.setState({
-      value:formatter.format(data.value)
-    });*/
+
   }
   render(){
-    //const notice = <div key="all">{this.state.value}</div>;
     return(
       <div className="">
         <Paper>

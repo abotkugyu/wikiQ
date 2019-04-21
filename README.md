@@ -1,37 +1,45 @@
 # wikiQ
 
-### shuld npm & docker
+- このアプリはwikipediaからランダム検索で記事を持ってきて、内容のタイトルを答えるアプリです。
 
-### constitution
+### dev構成
 ```
-# docker 
-run nginx nodejs mysql
-
-# nodejs
-data/nodejs/app.jp
-↓
-data/nodejs/view/build
-
-# mysql
-data/mysql
-#default auth info (need mysql client)
-mysql -hmysql -uroot -proot -p3306
-
-# nginx
-not use
+	local	 -	nodejs	
+		↓↑	
+	docker -	mysql(ランキング、ユーザーデータ）	
+		     -	nginx
 ```
 
+### prod構成(想定)
 ```
-develop
-	local	-	nodejs	
-			↓↑	
-	docker 	-	mysql(ランキング、ユーザーデータ）	
-		    -	nginx	
-
-product				
-	docker 	-	nginx	
+	docker - nginx	
 			↓（リバースプロキシ）	
-		    -	nodejs
+	docker -	nodejs
 			↓↑	
-		    -	mysql(ランキング、ユーザーデータ）
+	docker -	mysql(ランキング、ユーザーデータ）
+```
+
+### 開発時
+```
+#webpack nodejs/srcを監視
+npm run watch
+
+#nodejs (todo:foreverに)
+cd data/nodejs && node app.js
+```
+
+###
+```
+todo:
+- node起動をforeverに
+- room機能
+- room_id毎に多人数でsocketを分ける
+- ランキング
+- wikipedia記事のparseの改善
+- テスト
+```
+
+### その他
+```
+・開発をdockerで構成しないのはwebpackなどのhot reloadやfile watchに適していないため。
 ```

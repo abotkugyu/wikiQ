@@ -1,5 +1,13 @@
+import React from 'react';
+import socket from './socket.js';
+import Paper from '@material-ui/core/Paper';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
-class Ranking extends React.Component {
+export default class Ranking extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,21 +45,23 @@ class Ranking extends React.Component {
   render() {
     const board = [];
     for(var index in this.state.comment){
-      board.push(<tr key={index}><td>{this.state.comment[index]['rank']}</td><td>{this.state.comment[index]['name']}</td></tr>);
+      board.push(<TableRow key={index}><TableCell>{this.state.comment[index]['rank']}</TableCell><TableCell>{this.state.comment[index]['name']}</TableCell></TableRow>);
     }
     return (
-        <div className="col-xs-6">
-          <table className="mdl-data-table mdl-data-table--selectable mdl-shadow--2dp">
-            <thead>
-              <tr>
-                <th>ランキング</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {board}
-            </tbody>
-          </table>
+        <div>
+          <Paper>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ランキング</TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {board}
+              </TableBody>
+            </Table>
+          </Paper>
         </div>
     );
   }

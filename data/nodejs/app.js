@@ -1,99 +1,46 @@
 var listen_port = 10081;
 
+//server
 var express = require("express");
-var multer = require('multer');
-var form = multer({ dest: '/tmp' })
 var app = express();
-
 var http = require('http');
+
+//socket
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 var connect_count = 0;
 
+//file
 var fs = require('fs');
-var url = require('url');
-var log4js = require('log4js');
-var logger = exports = module.exports = {};
+
+//log
+var Logger = require(__dirname + '/middleware/logger.js');
+logger = Logger.init();
+
+//post
 var request = require('request');
-var mysql = require('mysql');
-var qs = require('querystring');
-global.host = 'mysql';
 
-function get_service(){
-  return "dev";
-}
+//db
+var mysql = require(__dirname + '/middleware/mysql.js');
+var connection = mysql.init();
 
-function init(){
-  if(get_service() == "dev"){
-    app.use(express.static(__dirname + "/static"));
-  } else if(get_service() == "prod"){
-    app.use(express.static(__dirname + "/static"));
-  }
-}
+//session
+var session = require(__dirname + '/middleware/session.js');
+session.init(app);
 
-function get_server_config() {
-  if(get_service() == "dev"){
-    return {
-      host     : '127.0.0.1',
-      user     : 'root',
-      password : 'root',
-      port     : 3306,
-    };
-  } else if(get_service() == "prod"){
-    return {
-      host     : 'mysql',
-      user     : 'root',
-      password : 'root',
-      port     : 3306,
-    };
-  }
-}
+//config
+var Config = require(__dirname + '/middleware/config.js');
+config = Config.get_config();
 
-init();
+//router
+var Router = require(__dirname + '/middleware/router.js');
+Router.init(app, connection);
 
-var connection = mysql.createConnection(get_server_config());
-
-var db = "CREATE DATABASE IF NOT EXISTS wikiq;";
-
-var table = "CREATE TABLE IF NOT EXISTS wikiq.user ("+
-"id int(11) not null AUTO_INCREMENT, "+
-"name text not null, "+
-"pass text not null, "+
-"answer int(11) default 0, "+
-"PRIMARY KEY (id) "+
-") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-
-connection.connect(function(err) {
-  if (err) {
-    console.error('error connecting: ' + err.stack);
-    return;
-  }
-  connection.query(db, function (error, results, fields) {
-    console.error(error);
-  });
-  connection.query(table, function (error, results, fields) {
-    console.error(error);
-  });
-});
-
-log4js.configure({
-     appenders: {
-         log: {
-             type: "file",
-             filename: "./log/log",
-         }
-    },
-    categories: { default: { appenders: ['log'], level: 'info' } }
-});
-logger.log = log4js.getLogger('log');
-logger.log.error('start'); 
-
-function get_question(){
-  var dt = new Date();
-  var seconds = dt.getSeconds();
-//  if(seconds == 0){
-  get_question();
-//}
+if(config.server == "dev"){
+  app.use(express.static(__dirname + "/dist"));
+  app.use(express.static(__dirname + "/src"));
+} else if(config.server == "prod"){
+  app.use(express.static(__dirname + "/dist"));
 }
 
 var question = "";
@@ -177,90 +124,6 @@ function send_ranking(){
   io.sockets.emit("send_ranking", {value:send});
 }
 
-app.post(['/login'], form.any(), function ( req, res ) {
-  console.log("login");
-  //randomで名前を決定する
-  var body = req.body; 
-  if (body.nickname == "" || body.password == "") {
-
-  }
-
-  if (body.login_type == "create") {
-
-  } else if (body.login_type == "join") {
-    //エラーで返す
-    if (body.room_id === 'undefined' || body.room_id == "") {
-      return res.send(req.body);
-    }
-  } else if (body.login_type == "random") {
-
-  }
-  return res.send(req.body);
-  
-  console.log(req.body.login_type);
-});
-
-/*
-server.on('request', function(req, res) {
-  var path = url.parse(req.url).pathname;
-  console.log(path);
-  if(path == '/index.html' || path == '/') {
-    if (fs.existsSync(vp("index.html"))) {
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      var output = fs.readFileSync(vp("index.html"), "utf-8");
-      res.write(output);
-    }else{
-      res.writeHead(403, {'Content-Type': 'text/html'});
-    }
-  }else if(path === '/login'){
-    var body='';
-    req.on('data', function (data) {
-        body +=data;
-        console.log(data);
-    });
-    req.on('end',function(){
-        var POST = qs.parse(body);
-        console.log(POST);
-        console.log(body.login_type);
-    });
-  }else if(path === '/favicon.ico'){
-    if (fs.existsSync(vp("favicon.ico"))) {
-      res.writeHead(200, {'Content-Type': 'image/x-icon'});
-      var output = fs.readFileSync(vp(path), "utf-8");
-      res.write(output);
-    }else{
-      res.writeHead(403, {'Content-Type': 'text/html'});
-    }
-  }else if(path.match(/.json$/)){
-    if (fs.existsSync(vp(path))) {  
-      res.writeHead(200, {'Content-Type': 'application/json'});
-      var output = fs.readFileSync(vp(path), "utf-8");
-      res.write(output);
-    }else{
-      res.writeHead(403, {'Content-Type': 'text/html'});
-    }
-  }else{
-    content_type = get_content_type(path);
-    if (fs.existsSync(vp(path))) {  
-      res.writeHead(200, {'Content-Type': content_type});
-      var output = fs.readFileSync(vp(path),"utf-8");
-      res.write(output);
-    }else{
-      res.writeHead(403, {'Content-Type': content_type});
-    }
-  }
-  res.end();
-});
-function get_content_type(path){
-  if (path.match(/.json$/)){
-    return "application/json";
-  } else if (path.match(/.js$/)) {
-    return "application/javascript";
-  }
-  return "text/html"; 
-}
-*/
-
 get_question();
 setInterval(send_question,50);
 setInterval(get_question,60000);
@@ -275,10 +138,13 @@ io.sockets.on('connection', function(socket) {
     send['answer'] = data.value;
     if(data.value == question_title){
       if(is_end){
-        send['notice'] = "あたりです！<br>(すでに正解者が出ているので、ポイントは追加されません)";
+        send['notice'] = "あたりです！(すでに正解者が出ているので、ポイントは追加されません)";
       }else{
         is_end = 1;
         send['notice'] = "あたり！！";
+        connection.query('update user set answer = answer+1 where name = ? ', [data.nickname], function (error, rows, fields) {
+          console.log("cant add answer count. name : " + data.nickname)
+        });
         //set_ranking();
         //send_ranking();
       }
